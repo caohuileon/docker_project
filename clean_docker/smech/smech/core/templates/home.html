@@ -1,0 +1,85 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block main_content %}
+<!-- page content -->
+<div class="content">
+    <div class="container-fluid">
+
+        <!-- table row -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card-box table-responsive">
+                    <h4 class="m-t-0 header-title">Leave and Holiday</h4>
+                    <p class="text-muted font-14 m-b-30">
+                        Here shows your Leave and Holidays status.
+                    </p>
+
+                    <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <thead>
+                        <tr>
+                            <th>Engine</th>
+                            <th>Browse</th>
+                            <th>Platform</th>
+                            <th>Version</th>
+                            <th>Grade</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- table row end -->
+
+    </div> <!-- container -->
+
+</div>
+<!-- page content -->
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        init_table();
+    } );
+
+    function init_table() {
+        //Buttons examples
+        var table = $('#datatable-buttons').DataTable({
+            cache: false,   // Disable cache
+            destroy: true,  // Allow destroy old data while reload page
+            processing: true,   // Display processing, usually used in massive data loading
+            lengthChange: true,
+            // Enable buttons, Note: should use table.buttons().container().appendTo() by sync
+            buttons: ['copy', 'excel', 'pdf', 'print'],
+            ajax: {
+                'url': 'leave_holiday/',
+                'type': 'GET',
+                'dataSrc': "",  // Use "" plain to support Json type data
+                'async': true,  // Use async method, will provide high performance and avoid web page dead
+                complete: function () {
+                    // Here is very tricky, buttons should use async:false method, then buttons can be seen, otherwise
+                    // use async:true with complete function to call table.buttons().container().appendTo()
+                    table.buttons().container()
+                        .appendTo('#datatable-buttons_wrapper .col-md-6:eq(0)');
+                }
+            },
+            // Use data:db_key method, it will map database index name key, then you can get key's value
+            columns: [
+                { data: "engine" },
+                { data: "browser" },
+                { data: "platform" },
+                { data: "version" },
+                { data: "grade" }
+            ],
+            // Self define columns as your want, target:0 means the first column, so target:1 means the second column
+            columnDefs: [{
+                'targets': 0,
+                'render': function (data, type, row, meta) {
+                    console.log(row.engine);
+                    return data;
+                }
+            }],
+        });
+    }
+
+</script>
+<!-- page content -->
+{% endblock %}

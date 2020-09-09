@@ -1,0 +1,59 @@
+version: '3'
+
+services:
+    django:
+        build:
+            context: .
+            dockerfile: docker/dev/django/Dockerfile
+        restart: always
+        volumes:
+          - ./smech:/code
+        env_file:
+          - ./docker/dev/django/env
+        ports:
+          - "8888:80"
+        depends_on:
+          - mysql
+          - phpmyadmin
+        command: ['sh', '/start.sh']
+
+    mysql:
+        image: mysql
+        command: --default-authentication-plugin=mysql_native_password
+        environment:
+          - MYSQL_ROOT_PASSWORD=a
+          - MYSQL_DATABASE=smech
+        volumes:
+          - ./docker/dev/mysql/data:/var/lib/mysql
+          - ./docker/dev/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        environment:
+            - PMA_HOST=mysql
+        restart: always
+        ports:
+            - 8882:80
+        volumes:
+            - /sessions
+        depends_on:
+            - mysql
+
+#    jenkins:
+#        image: jenkins/jenkins:lts
+#        restart: always
+#        ports:
+#            - 8080:8080
+#            - 50000:50000
+#        volumes:
+#            - ./compose/dev/jenkins/jenkins_home:/var/jenkins_home
+
+
+# build
+# docker-compose -f dev.yml build
+
+# start
+# docker-compose -f dev.yml up --remove-orphans
+
+# enter container
+# docker exec -it 434633a230c7 /bin/bash

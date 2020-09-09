@@ -1,0 +1,5 @@
+DATABASE=mysql
+DB=smech
+DB_USER=root
+DB_PASSWD=a
+DB_PORT=3306
