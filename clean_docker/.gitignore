@@ -336,5 +336,5 @@ tags
 # End of https://www.toptal.com/developers/gitignore/api/python,pycharm,vim,django
 
 
-docker/dev/mysql/data
+# docker/dev/mysql/data
 
